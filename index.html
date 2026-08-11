@@ -158,7 +158,7 @@
       document.getElementById('familyName').placeholder = t.familyPlaceholder;
       setText('attendanceLegend', t.attendance); setText('yesLabel', t.yes); setText('noLabel', t.no);
       setText('peopleCountLabel', t.people); setText('choosePeople', t.choose);
-      ['onePerson','twoPeople','threePeople','fourPeople','fivePeople','sixPeople', 'sixPeople', 'sevenPeople', 'eightPeople', 'ninePeople', 'tenPeople','elevenPeople','twelvePeople','thirteenPeople','fourteenPeople','fivteenPeople',].forEach((id, i) => setText(id, t.counts[i]));
+      ['onePerson','twoPeople','threePeople','fourPeople','fivePeople','sixPeople', 'sevenPeople', 'eightPeople', 'ninePeople', 'tenPeople','elevenPeople','twelvePeople','thirteenPeople','fourteenPeople','fivteenPeople',].forEach((id, i) => setText(id, t.counts[i]));
       setText('submitButton', t.submit); setText('backButton', t.back); setText('locationHint', t.location);
       languageScreen.hidden = true; formScreen.hidden = false;
     }
