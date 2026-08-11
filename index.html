@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buse & Buchar – Rückmeldung</title>
+  <style>
+    :root { --ink:#161616; --muted:#686868; --paper:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; color:var(--ink); background:#f1f1f1; font-family:Georgia, 'Times New Roman', serif; }
+    main { width:min(100%, 620px); min-height:620px; background:var(--paper); border:1px solid #bbb; padding:clamp(28px, 7vw, 58px); box-shadow:0 8px 28px #00000012; position:relative; }
+    main::before { content:''; position:absolute; inset:10px; border:1px solid #dedede; pointer-events:none; }
+    .content { position:relative; }
+    .language-screen { min-height:500px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+    .monogram { font-size:clamp(43px, 10vw, 64px); letter-spacing:4px; text-align:center; font-weight:400; margin:0 0 12px; }
+    h1 { text-align:center; font-size:clamp(25px, 5vw, 34px); font-weight:400; margin:0; }
+    .date { text-align:center; letter-spacing:2px; font-size:14px; margin:13px 0 34px; }
+    .intro { font-family:Arial, sans-serif; color:#3a3a3a; text-align:center; font-size:15px; line-height:1.6; margin:0 auto 30px; max-width:440px; }
+    .language-question { font:700 17px Arial, sans-serif; margin:18px 0 24px; }
+    .language-buttons { width:min(100%, 340px); display:grid; gap:12px; }
+    .language-buttons button, .back { border:1px solid #111; background:#fff; color:#111; min-height:48px; padding:12px; cursor:pointer; font:700 14px Arial, sans-serif; }
+    .language-buttons button:hover, .language-buttons button:focus, #submitButton { background:#111; color:#fff; }
+    .topbar { display:flex; justify-content:flex-end; margin-bottom:14px; }
+    .back { min-height:auto; padding:8px 12px; font-size:12px; }
+    label, legend { display:block; font-family:Arial, sans-serif; font-size:14px; font-weight:700; margin:0 0 9px; }
+    .field { margin:0 0 23px; }
+    input[type=text], select { width:100%; border:1px solid #777; border-radius:0; background:#fff; padding:13px; min-height:47px; font:16px Arial, sans-serif; color:var(--ink); }
+    fieldset { margin:0; padding:0; border:0; }
+    .choice { display:flex; align-items:center; gap:10px; font-family:Arial, sans-serif; font-size:15px; font-weight:400; margin:11px 0; cursor:pointer; }
+    .choice input { width:18px; height:18px; accent-color:#111; }
+    #submitButton { width:100%; border:1px solid #111; padding:14px; min-height:50px; font:700 14px Arial, sans-serif; letter-spacing:.5px; cursor:pointer; }
+    #submitButton:hover, #submitButton:focus { background:#fff; color:#111; }
+    .hint, #status { font:13px/1.5 Arial, sans-serif; color:var(--muted); text-align:center; margin:18px 0 0; }
+    #status[hidden], #peopleField[hidden], #formScreen[hidden], #languageScreen[hidden] { display:none; }
+    .success { color:#17612d !important; }
+    .error { color:#9b1c1c !important; }
+    .honeypot { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+    footer { margin-top:34px; text-align:center; font:12px Arial, sans-serif; color:#666; }
+    .arabic { direction:rtl; }
+    .arabic .topbar { justify-content:flex-start; }
+    .arabic .choice { text-align:right; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="content">
+      <section id="languageScreen" class="language-screen">
+        <p class="monogram">B | B</p>
+        <h1>Rückmeldung / Yanıt / تأكيد الحضور</h1>
+        <p class="date">26 | 09 | 2026</p>
+        <p class="language-question">Bitte Sprache auswählen<br>Lütfen dil seçiniz<br>يرجى اختيار اللغة</p>
+        <div class="language-buttons">
+          <button type="button" data-language="de">Deutsch</button>
+          <button type="button" data-language="tr">Türkçe</button>
+          <button type="button" data-language="ar">العربية</button>
+        </div>
+      </section>
+
+      <section id="formScreen" hidden>
+        <div class="topbar"><button type="button" class="back" id="backButton">← Sprache</button></div>
+        <p class="monogram">B | B</p>
+        <h1 id="title"></h1>
+        <p class="date">26 | 09 | 2026</p>
+        <p class="intro" id="intro"></p>
+
+        <!-- Die bestehende /exec-URL hier beibehalten oder erneut einsetzen. -->
+        <form id="rsvpForm" action="https://script.google.com/macros/s/AKfycby6btSN5R9B01pgYSXHLnbjSDHj3L6CvC_o2OKlm8eolEEEv9xh3Yr4Z1NhXbwwOG9jXw/exec" method="post" target="submitFrame">
+          <div class="field">
+            <label for="familyName" id="familyNameLabel"></label>
+            <input id="familyName" name="familyName" type="text" autocomplete="family-name" required maxlength="80">
+          </div>
+
+          <div class="field">
+            <fieldset>
+              <legend id="attendanceLegend"></legend>
+              <label class="choice"><input type="radio" name="attendance" value="Ja" required><span id="yesLabel"></span></label>
+              <label class="choice"><input type="radio" name="attendance" value="Nein"><span id="noLabel"></span></label>
+            </fieldset>
+          </div>
+
+          <div class="field" id="peopleField" hidden>
+            <label for="peopleCount" id="peopleCountLabel"></label>
+            <select id="peopleCount" name="peopleCount" disabled>
+              <option value="" selected id="choosePeople"></option>
+              <option value="1" id="onePerson"></option>
+              <option value="2" id="twoPeople"></option>
+              <option value="3" id="threePeople"></option>
+              <option value="4" id="fourPeople"></option>
+              <option value="5" id="fivePeople"></option>
+              <option value="6" id="sixPeople"></option>
+            </select>
+          </div>
+
+          <div class="honeypot" aria-hidden="true"><input name="website" type="text" tabindex="-1" autocomplete="off"></div>
+          <button id="submitButton" type="submit"></button>
+        </form>
+        <p id="status" hidden aria-live="polite"></p>
+        <p class="hint" id="locationHint"></p>
+        <footer>Buse & Buchar</footer>
+      </section>
+    </div>
+  </main>
+  <iframe name="submitFrame" title="Übermittlung" hidden></iframe>
+
+  <script>
+    const text = {
+      de: {
+        title: 'Rückmeldung zur Hochzeitsfeier',
+        intro: 'Wir freuen uns, unseren besonderen Tag mit euch zu feiern.<br>Bitte gebt uns bis spätestens <strong>15.09.2026</strong> Bescheid.',
+        family: 'Familienname', familyPlaceholder: 'z. B. Familie Mustermann', attendance: 'Könnt ihr an unserer Hochzeitsfeier teilnehmen?',
+        yes: 'Ja, wir kommen gerne', no: 'Leider können wir nicht kommen', people: 'Mit wie vielen Personen kommt ihr?', choose: 'Bitte auswählen',
+        counts: ['1 Person','2 Personen','3 Personen','4 Personen','5 Personen','6 oder mehr Personen'], submit: 'Rückmeldung absenden', back: '← Sprache', location: 'Mehrzweckhalle Hawangen · 17:00 Uhr',
+        successYes: 'Vielen Dank – wir freuen uns sehr, mit euch zu feiern!', successNo: 'Schade, dass ihr nicht dabei sein könnt. Vielen Dank für eure Rückmeldung.'
+      },
+      tr: {
+        title: 'Düğün Daveti Yanıtı',
+        intro: 'Özel günümüzü sizlerle kutlamaktan mutluluk duyarız.<br>Lütfen en geç <strong>15.09.2026</strong> tarihine kadar bize bilgi veriniz.',
+        family: 'Soyadınız', familyPlaceholder: 'Örn. Yılmaz ailesi', attendance: 'Düğünümüze katılabilecek misiniz?',
+        yes: 'Evet, memnuniyetle geleceğiz', no: 'Maalesef katılamayacağız', people: 'Kaç kişi geleceksiniz?', choose: 'Lütfen seçiniz',
+        counts: ['1 kişi','2 kişi','3 kişi','4 kişi','5 kişi','6 veya daha fazla kişi'], submit: 'Yanıtı gönder', back: '← Dil seçimi', location: 'Mehrzweckhalle Hawangen · 17:00',
+        successYes: 'Teşekkür ederiz – sizinle kutlamayı sabırsızlıkla bekliyoruz!', successNo: 'Aramızda olamayacağınız için üzgünüz. Yanıtınız için teşekkür ederiz.'
+      },
+      ar: {
+        title: 'تأكيد حضور حفل الزفاف',
+        intro: 'يسعدنا أن نحتفل بيومنا المميز معكم.<br>يرجى إبلاغنا في موعد أقصاه <strong>15.09.2026</strong>.',
+        family: 'اسم العائلة', familyPlaceholder: 'مثال: عائلة أحمد', attendance: 'هل ستتمكنون من حضور حفل زفافنا؟',
+        yes: 'نعم، سنحضر بكل سرور', no: 'للأسف لن نتمكن من الحضور', people: 'كم شخصًا سيحضر؟', choose: 'يرجى الاختيار',
+        counts: ['شخص واحد','شخصان','3 أشخاص','4 أشخاص','5 أشخاص','6 أشخاص أو أكثر'], submit: 'إرسال التأكيد', back: 'اختيار اللغة →', location: 'Mehrzweckhalle Hawangen · 17:00',
+        successYes: 'شكرًا لكم – يسعدنا الاحتفال معكم!', successNo: 'نأسف لعدم تمكنكم من الحضور. شكرًا لتأكيدكم.'
+      }
+    };
+
+    const languageScreen = document.getElementById('languageScreen');
+    const formScreen = document.getElementById('formScreen');
+    const form = document.getElementById('rsvpForm');
+    const peopleField = document.getElementById('peopleField');
+    const peopleCount = document.getElementById('peopleCount');
+    const status = document.getElementById('status');
+    let currentLanguage = 'de';
+
+    function setText(id, value) { document.getElementById(id).innerHTML = value; }
+    function selectLanguage(language) {
+      currentLanguage = language;
+      const t = text[language];
+      document.documentElement.lang = language;
+      formScreen.classList.toggle('arabic', language === 'ar');
+      setText('title', t.title); setText('intro', t.intro); setText('familyNameLabel', t.family);
+      document.getElementById('familyName').placeholder = t.familyPlaceholder;
+      setText('attendanceLegend', t.attendance); setText('yesLabel', t.yes); setText('noLabel', t.no);
+      setText('peopleCountLabel', t.people); setText('choosePeople', t.choose);
+      ['onePerson','twoPeople','threePeople','fourPeople','fivePeople','sixPeople'].forEach((id, i) => setText(id, t.counts[i]));
+      setText('submitButton', t.submit); setText('backButton', t.back); setText('locationHint', t.location);
+      languageScreen.hidden = true; formScreen.hidden = false;
+    }
+
+    document.querySelectorAll('[data-language]').forEach(button => button.addEventListener('click', () => selectLanguage(button.dataset.language)));
+    document.getElementById('backButton').addEventListener('click', () => { formScreen.hidden = true; languageScreen.hidden = false; status.hidden = true; });
+
+    function updatePeopleField() {
+      const choice = document.querySelector('input[name="attendance"]:checked');
+      const coming = choice && choice.value === 'Ja';
+      peopleField.hidden = !coming;
+      peopleCount.disabled = !coming;
+      peopleCount.required = Boolean(coming);
+      if (!coming) peopleCount.value = '';
+    }
+    document.querySelectorAll('input[name="attendance"]').forEach(input => input.addEventListener('change', updatePeopleField));
+
+    form.addEventListener('submit', event => {
+      if (form.action.includes('PASTE_YOUR_APPS_SCRIPT_URL_HERE')) {
+        event.preventDefault(); status.hidden = false; status.className = 'error'; status.textContent = 'Die Seite ist noch nicht mit der Antwortliste verbunden.'; return;
+      }
+      if (!form.checkValidity()) return;
+      const attendance = document.querySelector('input[name="attendance"]:checked').value;
+      status.hidden = false; status.className = 'success';
+      status.textContent = attendance === 'Ja' ? text[currentLanguage].successYes : text[currentLanguage].successNo;
+      document.getElementById('submitButton').disabled = true;
+    });
+  </script>
+</body>
+</html>
